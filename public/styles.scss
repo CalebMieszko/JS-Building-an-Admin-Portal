@@ -1,0 +1,177 @@
+@use "sass:math";
+@import url('https://fonts.googleapis.com/css2?family=Varela&display=swap');
+
+body {
+    background-color: #080905;
+    color: #f2f1f7;
+    font-family: Varela, sans-serif;
+}
+
+input {
+    margin: 0 0 10px;
+}
+
+#page-title,
+#admin-title {
+    text-align: center;
+    font-size: 4em;
+    margin: .7em;
+}
+
+#root {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+}
+
+.card {
+    min-height: 436px;
+    background-color: #f2f1f7;
+    color: #080905;
+}
+
+.admin-card {
+    min-height: 520px;
+}
+
+.card-img-top {
+    height: 220px;
+    object-fit: cover;
+}
+
+.card-title,
+#submit-btn {
+    margin-bottom: 14px;
+}
+
+.glitch {
+    // the animation name 'glitch2' needs to be defined below
+    animation: glitch2 2s steps(100) infinite;
+}
+
+.glitch:after {
+    content: attr(data-text);
+    position: absolute;
+    left: 2px;
+    text-shadow: -1px 0 red;
+    top: 0;
+    color: white;
+    background: black;
+    overflow: hidden;
+    clip-path: inset(0 900px 0 0);
+    animation: noise-anim 2s infinite linear alternate-reverse;
+}
+
+.glitch:before {
+    content: attr(data-text);
+    position: absolute;
+    left: -2px;
+    text-shadow: 1px 0 blue;
+    top: 0;
+    color: white;
+    background: transparent;
+    overflow: hidden;
+    clip-path: inset(0 900px 0 0);
+    animation: noise-anim-2 3s infinite linear alternate-reverse;
+}
+
+// custom keyframes for glitch effects
+@keyframes noise-anim {
+    $steps: 20;
+    @for $i from 0 through $steps {
+        #{percentage($i * math.div(1, $steps))} {
+            clip-path: inset(random(100)+px 9999px random(100)+px 0);
+        }
+    }
+}
+
+@keyframes noise-anim-2 {
+    $steps: 20;
+
+    @for $i from 0 through $steps {
+        #{percentage($i * math.div(1, $steps))} {
+            clip-path: inset(random(100)+px 9999px random(100)+px 0);
+        }
+    }
+}
+
+// define the colors and pixels for the glitch effect
+$r: rgba(255, 0, 0, 1);
+$g: rgba(0, 255, 0, 1);
+$b: rgba(0, 0, 255, 1);
+$px: 0;
+$px2: 0;
+
+// custom mixins for glitch effects
+@mixin mini-glitch($c1, $c2, $coeff, $start, $end) {
+    $interval: $end - $start;
+
+    @for $i from $start through $end {
+        #{$i * 1%} {
+            @if $i < $start + math.div($interval, 2) {
+                $px : $px + $coeff;
+                $px2: -$px;
+                text-shadow: #{$px}px 0 0 $c1,
+                #{$px2}px 0 0 $c2;
+            }
+
+            @else {
+                $px : $px - 1;
+                $px2: -$px;
+                text-shadow: #{$px}px 0 0 $c1,
+                #{$px2}px 0 0 $c2;
+            }
+        }
+    }
+
+    $px: 0;
+    $px2: 0;
+}
+
+// custom mixin for larger glitch effects
+@mixin big-glitch($c1, $c2, $distance, $start, $end) {
+    @for $i from $start through $end {
+        #{$i * 1%} {
+            @if $i ==$end {
+                text-shadow: 0 0 0 $c1, 0 0 0 $c2;
+            }
+
+            @else {
+                $px: $distance;
+                $px2: -$px;
+                text-shadow: #{$px}px 0 0 $c1,
+                #{$px2}px 0 0 $c2;
+            }
+        }
+    }
+
+    $px: 0;
+    $px2: 0;
+}
+
+// custom keyframes for glitch2 animation using custom mixins
+@keyframes glitch2 {
+    @include mini-glitch($r, $b, 1, 0, 10);
+    @include mini-glitch($r, $g, 0.5, 11, 20);
+    @include mini-glitch($b, $g, 0.7, 21, 40);
+
+    @include big-glitch($b, $g, 50, 41, 42);
+
+    @include mini-glitch($r, $g, 0.5, 43, 50);
+    @include mini-glitch($r, $b, 1, 51, 60);
+
+    @include big-glitch($r, $g, 30, 61, 62);
+
+    @include mini-glitch($r, $b, 0.5, 63, 70);
+
+    @include big-glitch($r, $b, 70, 71, 72);
+
+    @include mini-glitch($r, $b, 1, 73, 80);
+    @include mini-glitch($r, $g, 0.5, 81, 90);
+
+    @include big-glitch($g, $b, 60, 91, 92);
+
+    @include mini-glitch($b, $g, 0.7, 93, 100);
+}
